@@ -4,9 +4,9 @@ Updated: July 22, 2026
 
 ## 1. Executive summary
 
-The standalone Hanaply Vision Website is implemented as a premium, responsive product-storytelling experience. It explains the proposed Career Radar, job intelligence, Truth Gate, Application Packs, customer and admin surfaces, production roadmap, shared architecture, pricing assumptions, and future mobile direction without presenting any of them as a live SaaS product.
+The standalone Hanaply Vision Website is implemented as a premium, responsive product-storytelling experience. It explains the proposed Career Radar, job intelligence, claim verification, Application Packs, customer and admin surfaces, production roadmap, shared architecture, pricing assumptions, and future mobile direction without presenting any of them as a live SaaS product.
 
-All local build, type, lint, automated interaction, content-schema, route-rendering, and dependency-audit gates pass. Deployment was not performed because owner authorization was not provided. Final status is **CONDITIONAL GO** for an owner-reviewed preview.
+Deployment was not performed because owner authorization was not provided.
 
 ## 2. Visual direction
 
@@ -19,22 +19,18 @@ The generated social card in `public/og.png` follows the same Career Radar visua
 - `/`: full product vision narrative and simulations
 - `/roadmap`: interactive production roadmap with 12 planned phases
 - `/architecture`: interactive system map and node inspector
-- `/build-status`: dated implementation status and explicit availability boundary
 - `/docs`: searchable documentation index
-- `/docs/[slug]`: product, intelligence, Truth Gate, architecture, roadmap, security, and mobile-readiness documentation
+- `/docs/[slug]`: product, intelligence, claim verification, architecture, roadmap, security, and mobile-readiness documentation
 
 The app also includes custom not-found and recoverable error views, sitemap output, robots metadata, fixed global navigation, mobile navigation, footer links, and a command palette.
 
 ## 4. Major interactions
 
-Implemented interactions include a skippable opening sequence, noise-reduction controls, configurable Career Radar scan, explainable result selection, requirement classification, Truth Gate blocking, Application Pack tabs, cover-letter tones, resume strategies, customer-dashboard states, admin-preview controls, monthly and annual pricing, roadmap selection and deep links, architecture node selection, flat-diagram modes, docs search, copyable document links, dark reading mode, mobile navigation, and Cmd or Ctrl + K navigation.
+Implemented interactions include a skippable opening sequence, noise-reduction controls, configurable Career Radar scan, explainable result selection, requirement classification, claim verification, Application Pack tabs, cover-letter tones, resume strategies, customer-dashboard states, admin-preview controls, monthly and annual pricing, roadmap selection and deep links, architecture node selection, flat-diagram modes, docs search, copyable document links, dark reading mode, mobile navigation, and Cmd or Ctrl + K navigation.
 
 ## 5. Three.js scenes
 
-`components/three/ProductScenes.tsx` contains the two isolated React Three Fiber scenes:
-
-- Career Signal Pipeline: job signals move through raw, profile-rule, and worthwhile stages.
-- Career Evidence Map: a verified profile connects selectable evidence clusters to one sample role.
+`components/three/ProductScenes.tsx` contains the isolated Career Evidence Map, where a verified profile connects selectable evidence clusters to one sample role.
 
 Both scenes use adaptive pixel density, off-screen unmounting, low-power checks, reduced-motion behavior, semantic descriptions, flat fallbacks, unsupported-WebGL fallbacks, and context-loss recovery.
 
@@ -44,7 +40,7 @@ Motion is driven primarily by Motion and shared constants in `lib/motion.ts`. Th
 
 ## 7. Content system
 
-Product content is separated from rendering code and validated with Zod. Roadmap statuses, architecture layers, pricing data, and Build Status decisions use explicit schemas in `lib/content-schema.ts`. Invalid owner edits fail during import, testing, or build instead of silently creating inconsistent claims.
+Product content is separated from rendering code and validated with Zod. Roadmap statuses, architecture layers, and pricing data use explicit schemas in `lib/content-schema.ts`. Invalid owner edits fail during import, testing, or build instead of silently creating inconsistent claims.
 
 No live job, customer, payment, or AI data is connected. Fictional employers, profiles, scores, dashboards, and admin actions are labeled as demonstration data or product visualizations.
 
@@ -62,7 +58,7 @@ The simulator lets a visitor select a fictional career, related direction, exper
 
 ## 11. Application Pack simulation
 
-The Application Pack connects a worthwhile sample job to AI job analysis, cover letter, tailored resume, recruiter message, interview preparation, and a human-review checklist. Letter tone and resume strategy can change while verified facts and dates remain fixed. The Truth Gate separately demonstrates a supported transformation and a blocked fabricated claim.
+The Application Pack connects a worthwhile sample job to AI job analysis, cover letter, tailored resume, recruiter message, interview preparation, and a human-review checklist. Letter tone and resume strategy can change while verified facts and dates remain fixed. Claim verification separately demonstrates a supported transformation and removes a fabricated claim.
 
 ## 12. Responsive work
 
@@ -90,18 +86,18 @@ The production build reports a large-chunk warning for the lazy Three.js module:
 - `npm audit`
 - Static scan for prohibited em dash characters in user-facing sources
 
-Coverage includes Zod-backed content integrity, roadmap status discipline, architecture failure and mobile fields, pricing calculations, responsive and motion CSS rules, Truth Gate behavior, Career Radar completion and hard blockers, Application Pack and resume variations, roadmap and architecture controls, command-palette search and Escape behavior, Three.js fallback behavior, production build, and server-rendered route smoke tests.
+Coverage includes Zod-backed content integrity, roadmap discipline, architecture failure and mobile fields, pricing calculations, responsive and motion CSS rules, claim-verification behavior, Career Radar completion and hard blockers, Application Pack and resume variations, roadmap and architecture controls, command-palette search and Escape behavior, Three.js fallback behavior, production build, and server-rendered route smoke tests.
 
 ## 16. Exact results
 
 - ESLint: passed with zero reported errors
 - TypeScript: passed with zero reported errors
 - Production vinext build: passed on Vite 8.1.5
-- Vitest: 3 files passed, 14 tests passed
+- Vitest: 3 files passed, 15 tests passed
 - Node route tests: 2 tests passed, 0 failed
 - Dependency audit: 0 known vulnerabilities across production and development dependencies
 - User-facing em dash scan: 0 matches
-- Built routes: `/`, `/architecture`, `/build-status`, `/docs`, `/docs/:slug`, and `/roadmap`
+- Built routes: `/`, `/architecture`, `/docs`, `/docs/:slug`, and `/roadmap`
 - Build warning: lazy Three.js chunks exceed the default 500 KB warning threshold
 
 ## 17. Known limitations
@@ -122,7 +118,6 @@ Primary product sources:
 - `content/architecture.ts`
 - `content/plans.ts`
 - `content/principles.ts`
-- `content/build-status.ts`
 - `content/docs.ts`
 
 Supporting owner controls:
@@ -140,8 +135,5 @@ Editing guidance is in `docs/CONTENT_EDITING.md`; system boundaries are in `docs
 
 No commit was created. The workspace began as an untracked implementation and the owner did not request staging, committing, pushing, or pull-request creation. No deployment or remote mutation was performed.
 
-## 20. Final decision
-
-**CONDITIONAL GO**
 
 All mandatory local automation gates pass and the core interactions are implemented. Approval is conditional on owner review of product language, pricing, roadmap ownership, and metadata; explicit deployment authorization; and a final hosted-browser visual, keyboard, assistive-technology, and performance pass. The production SaaS remains planned.

@@ -1,12 +1,13 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ApplicationPackDemo, TruthGateDemo } from "@/components/application/ApplicationPackDemo";
+import { ApplicationPackDemo, ClaimVerificationDemo } from "@/components/application/ApplicationPackDemo";
 import { ResumeComparison } from "@/components/product/ProductPreviews";
 import { CareerRadarSimulator } from "@/components/radar/CareerRadarSimulator";
 import { RoadmapExplorer } from "@/components/roadmap/RoadmapExplorer";
 import { ArchitectureExplorer } from "@/components/architecture/ArchitectureExplorer";
-import { CareerSignalScene } from "@/components/three/ProductScenes";
+import { CareerSignalPreview } from "@/components/vision/CareerSignalPreview";
+import { JobIntelligence } from "@/components/vision/VisionHome";
 
 afterEach(() => {
   cleanup();
@@ -14,12 +15,12 @@ afterEach(() => {
 });
 
 describe("product vision interactions", () => {
-  it("blocks an unsupported career claim", async () => {
+  it("removes an unsupported career claim", async () => {
     const user = userEvent.setup();
-    render(<TruthGateDemo />);
-    await user.click(screen.getByRole("button", { name: /test unsupported claim/i }));
-    expect(screen.getByText("Blocked by Truth Gate")).toBeInTheDocument();
-    expect(screen.getByText(/No verified fact supports this claim/i)).toBeInTheDocument();
+    render(<ClaimVerificationDemo />);
+    await user.click(screen.getByRole("button", { name: /show an unsupported version/i }));
+    expect(screen.getByText("Unsupported claim removed")).toBeInTheDocument();
+    expect(screen.getByText(/not backed by confirmed profile details/i)).toBeInTheDocument();
   });
 
   it("changes resume strategy without changing the verified-facts note", () => {
@@ -44,7 +45,7 @@ describe("product vision interactions", () => {
 
   it("uses a compact custom career picker instead of a native mobile select", () => {
     const { container } = render(<CareerRadarSimulator />);
-    const careerPicker = screen.getByRole("button", { name: "Main career" });
+    const careerPicker = screen.getByRole("button", { name: /Main career/i });
 
     expect(container.querySelector("select")).not.toBeInTheDocument();
     fireEvent.click(careerPicker);
@@ -75,10 +76,20 @@ describe("product vision interactions", () => {
     expect(screen.getByLabelText("Interactive Hanaply system architecture")).toHaveClass("flat");
   });
 
-  it("uses the semantic Career Radar fallback when reduced motion is requested", () => {
-    const { container } = render(<CareerSignalScene />);
-    expect(screen.getByLabelText(/Career Radar filters weak signals/i)).toBeInTheDocument();
-    expect(container.querySelector("canvas")).not.toBeInTheDocument();
-    expect(container.querySelector(".radar-fallback")).toBeInTheDocument();
+  it("explains a worthwhile opportunity with concrete evidence", () => {
+    render(<CareerSignalPreview step={4} />);
+    expect(screen.getByLabelText(/Example opportunity review/i)).toBeInTheDocument();
+    expect(screen.getByText("Strong match")).toBeInTheDocument();
+    expect(screen.getByText(/No hard blockers found/i)).toBeInTheDocument();
+  });
+
+  it("updates classified evidence and verdict impact for each requirement", () => {
+    render(<JobIntelligence />);
+    fireEvent.click(screen.getByRole("tab", { name: /Location/i }));
+
+    expect(screen.getByText(/Applicants must be based in the Philippines/i)).toBeInTheDocument();
+    expect(screen.getByText("Philippines eligibility")).toBeInTheDocument();
+    expect(screen.getByText("Clears a hard constraint")).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /Location/i })).toHaveAttribute("aria-selected", "true");
   });
 });

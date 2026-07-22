@@ -18,3 +18,18 @@ Object.defineProperty(Element.prototype, "scrollIntoView", {
   writable: true,
   value: () => undefined,
 });
+
+class MockIntersectionObserver implements IntersectionObserver {
+  readonly root = null;
+  readonly rootMargin = "0px";
+  readonly thresholds = [0];
+  disconnect() {}
+  observe() {}
+  takeRecords(): IntersectionObserverEntry[] { return []; }
+  unobserve() {}
+}
+
+Object.defineProperty(globalThis, "IntersectionObserver", {
+  writable: true,
+  value: MockIntersectionObserver,
+});

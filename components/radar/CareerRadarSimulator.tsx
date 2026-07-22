@@ -19,25 +19,87 @@ const opportunities = [
 function SelectControl({ label, value, options, onChange }: { label: string; value: string; options: string[]; onChange: (value: string) => void }) {
   const [open, setOpen] = useState(false);
   const labelId = useId();
+  const valueId = useId();
+  const listboxId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
+    const focusSelected = window.requestAnimationFrame(() => {
+      rootRef.current?.querySelector<HTMLButtonElement>('[role="option"][aria-selected="true"]')?.focus();
+    });
     const closeOutside = (event: PointerEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
     };
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
     };
     document.addEventListener("pointerdown", closeOutside);
     window.addEventListener("keydown", closeOnEscape);
     return () => {
+      window.cancelAnimationFrame(focusSelected);
       document.removeEventListener("pointerdown", closeOutside);
       window.removeEventListener("keydown", closeOnEscape);
     };
   }, [open]);
 
-  return <div className="form-field" ref={rootRef}><span id={labelId}>{label}</span><div className="select-wrap"><button type="button" className="select-button" aria-labelledby={labelId} aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen((current) => !current)}><span>{value}</span><ChevronDown size={16} aria-hidden="true" /></button>{open && <div className="select-options" role="listbox" aria-labelledby={labelId}>{options.map((option) => <button type="button" role="option" aria-selected={option === value} key={option} onClick={() => { onChange(option); setOpen(false); }}><span>{option}</span>{option === value && <Check size={16} aria-hidden="true" />}</button>)}</div>}</div></div>;
+  const moveFocus = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    const items = [...event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="option"]')];
+    const current = items.indexOf(document.activeElement as HTMLButtonElement);
+    const next = event.key === "Home" ? 0 : event.key === "End" ? items.length - 1 : event.key === "ArrowDown" ? (current + 1) % items.length : (current - 1 + items.length) % items.length;
+    items[next]?.focus();
+  };
+
+  return (
+    <div className="form-field" ref={rootRef}>
+      <span id={labelId}>{label}</span>
+      <div className="select-wrap">
+        <button
+          ref={triggerRef}
+          type="button"
+          className="select-button"
+          aria-controls={open ? listboxId : undefined}
+          aria-labelledby={`${labelId} ${valueId}`}
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          onKeyDown={(event) => {
+            if (!open && event.key === "ArrowDown") {
+              event.preventDefault();
+              setOpen(true);
+            }
+          }}
+          onClick={() => setOpen((current) => !current)}
+        >
+          <span id={valueId}>{value}</span><ChevronDown size={16} aria-hidden="true" />
+        </button>
+        {open && (
+          <div className="select-options" id={listboxId} role="listbox" aria-labelledby={labelId} onKeyDown={moveFocus}>
+            {options.map((option) => (
+              <button
+                type="button"
+                role="option"
+                aria-selected={option === value}
+                key={option}
+                onClick={() => {
+                  onChange(option);
+                  setOpen(false);
+                  window.requestAnimationFrame(() => triggerRef.current?.focus());
+                }}
+              >
+                <span>{option}</span>{option === value && <Check size={16} aria-hidden="true" />}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 function ChipPicker({ label, options, selected, onToggle }: { label: string; options: string[]; selected: string[]; onToggle: (value: string) => void }) {
@@ -80,7 +142,7 @@ export function CareerRadarSimulator() {
         <button className="primary-button radar-run" type="button" onClick={run} disabled={scan >= 0 && !done}><Radar size={18} />{scan >= 0 && !done ? "Career Radar running" : "Run Career Radar"}<ArrowRight size={18} /></button>
       </div>
       <div className={`sim-output ${scan >= 0 ? "active" : ""}`} aria-live="polite">
-        {scan < 0 ? <div className="sim-idle"><div className="mini-radar"><i /><i /><i /></div><h3>Your signal field is ready.</h3><p>Configure a sample profile, then run the radar to see how Hanaply narrows an opportunity set.</p></div> : !done ? <div className="scan-progress">
+        {scan < 0 ? <div className="sim-idle"><div className="idle-result-preview" aria-hidden="true"><header><span>Sample output</span><strong>3 roles reviewed</strong></header><div><span><small>Atlas Workflow</small>Automation Solutions Engineer</span><strong className="mint">88 · Strong</strong></div><div><span><small>Pinebridge Labs</small>Product Automation Developer</span><strong>74 · Stretch</strong></div><div><span><small>Northstar Systems</small>Senior Platform Director</span><strong className="coral">Blocked</strong></div></div><h3>See which roles are worth your time.</h3><p>Run the sample Radar to compare fit, surface realistic gaps, and explain why a role should—or should not—be pursued.</p></div> : !done ? <div className="scan-progress">
           <div className="scan-orbit"><Radar size={38} /></div><span>Analyzing {career}</span><h3>{scanSteps[Math.min(scan, scanSteps.length - 1)]}</h3>
           <div className="step-list">{scanSteps.map((step, index) => <div key={step} className={index < scan ? "complete" : index === scan ? "current" : ""}><span>{index < scan ? <Check size={13} /> : index + 1}</span>{step}</div>)}</div>
         </div> : <div className="results-view">

@@ -43,17 +43,3 @@ export const planSchema = z.object({
   description: z.string().min(1),
   features: z.array(z.string()).min(1),
 });
-
-export const buildStatusSchema = z.object({
-  decision: z.enum(["GO", "CONDITIONAL GO", "NO-GO"]),
-  updatedAt: z.string().date(),
-  currentPhase: z.string().min(1),
-  summary: z.string().min(1),
-  completed: z.array(z.string()),
-  inProgress: z.array(z.string()),
-  validations: z.array(z.string()),
-  ownerActions: z.array(z.string()),
-  limitations: z.array(z.string()),
-  deferred: z.array(z.string()),
-  milestoneNotes: z.array(z.string()),
-});

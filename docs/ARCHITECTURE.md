@@ -8,7 +8,7 @@ This repository is a standalone product-vision application. It contains content,
 
 ### Content
 
-The `content/` directory is the source of truth for roadmap, architecture, plans, principles, Build Status, and documentation. Long-form product state is not embedded in animation components.
+The `content/` directory is the source of truth for roadmap, architecture, plans, principles, and documentation. Long-form product state is not embedded in animation components.
 
 ### Validation
 
@@ -22,7 +22,7 @@ Components are grouped by product concept:
 - `components/navigation` for the command palette
 - `components/vision` for primary story composition
 - `components/radar` for the Career Radar simulation
-- `components/application` for Truth Gate and Application Packs
+- `components/application` for claim verification and Application Packs
 - `components/product` for resume, customer, and admin previews
 - `components/roadmap` and `components/architecture` for dedicated explorers
 - `components/docs` for the documentation experience
@@ -44,7 +44,7 @@ Local React state is used for independent simulations. The command palette is sh
 
 ## Routes
 
-The App Router keeps the immersive primary story separate from high-information pages. Roadmap, architecture, Build Status, and docs can be linked and reviewed without replaying the main experience.
+The App Router keeps the immersive primary story separate from high-information pages. Roadmap, architecture, and docs can be linked and reviewed without replaying the main experience.
 
 ## Accessibility boundary
 

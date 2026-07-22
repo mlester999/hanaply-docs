@@ -3,23 +3,23 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, ArrowUpRight, Ban, Boxes, Check, ChevronRight, Clock3, Code2, FileCheck2, Filter, Globe2, Layers3, ShieldCheck, Smartphone, Sparkles, Target, X } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import { CareerRadarSimulator } from "@/components/radar/CareerRadarSimulator";
-import { ApplicationPackDemo, TruthGateDemo } from "@/components/application/ApplicationPackDemo";
+import { ApplicationPackDemo, ClaimVerificationDemo } from "@/components/application/ApplicationPackDemo";
 import { AdminPreview, ProductDashboardPreview, ResumeComparison } from "@/components/product/ProductPreviews";
 import { plans } from "@/content/plans";
 import { principles } from "@/content/principles";
 import { roadmap } from "@/content/roadmap";
 import { motionTokens, reveal } from "@/lib/motion";
+import { CareerSignalPreview } from "@/components/vision/CareerSignalPreview";
 
-const CareerSignalScene = dynamic(() => import("@/components/three/ProductScenes").then((module) => module.CareerSignalScene), { ssr: false, loading: () => <div className="scene-loading" aria-label="Loading the Career Radar visualization"><i /><i /><i /></div> });
 const CareerConstellationScene = dynamic(() => import("@/components/three/ProductScenes").then((module) => module.CareerConstellationScene), { ssr: false, loading: () => <div className="constellation-loading">Loading the accessible career map…</div> });
 
-const introSteps = ["Signal found", "Noise filtered", "Profile verified", "Pack prepared"];
+const introSteps = ["Role discovered", "Constraints cleared", "Evidence matched", "Recommendation ready"];
 
 export function VisionHome() {
-  return <div className="vision-home"><Hero /><Problem /><CareerRadar /><CareerProfile /><JobIntelligence /><TruthGate /><ApplicationPacks /><ResumeSection /><DashboardSection /><AdminSection /><PricingSection /><RoadmapPreview /><ArchitecturePreview /><MobileFuture /><Principles /></div>;
+  return <div className="vision-home"><Hero /><Problem /><CareerRadar /><CareerProfile /><JobIntelligence /><ClaimVerification /><ApplicationPacks /><ResumeSection /><DashboardSection /><AdminSection /><PricingSection /><RoadmapPreview /><ArchitecturePreview /><MobileFuture /><Principles /></div>;
 }
 
 function Hero() {
@@ -40,10 +40,8 @@ function Hero() {
       <div className="hero-proof"><div><strong>01</strong><span>Discover<br />fresh signals</span></div><div><strong>02</strong><span>Explain<br />real fit</span></div><div><strong>03</strong><span>Prepare<br />truthful packs</span></div></div>
     </div>
     <div className="hero-visual">
-      <div className="hero-scene-head"><div><span>CAREER SIGNAL FIELD</span><strong>Manila · 08:42</strong></div>{introStep < introSteps.length && <button type="button" onClick={() => setIntroStep(introSteps.length)}>Skip sequence</button>}</div>
-      <CareerSignalScene />
-      <div className="signal-readout"><AnimatePresence mode="wait"><motion.div key={introStep} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}><span className="readout-number">{String(Math.min(introStep + 1, 4)).padStart(2, "0")}</span><div><small>RADAR SEQUENCE</small><strong>{introStep >= introSteps.length ? "Worthwhile signal ready" : introSteps[introStep]}</strong></div></motion.div></AnimatePresence><span className={`readout-state ${introStep >= introSteps.length ? "ready" : ""}`}>{introStep >= introSteps.length ? "READY" : "ANALYZING"}</span></div>
-      <article className="hero-job-card"><span className="company-glyph">A</span><div><small>Atlas Workflow · Demonstration Data</small><strong>Automation Solutions Engineer</strong><span>Strong Match · 88</span></div><ChevronRight size={18} /></article>
+      <div className="hero-scene-head"><div><span>OPPORTUNITY REVIEW</span><strong>{introStep >= introSteps.length ? "Recommendation ready" : introSteps[introStep]}</strong></div>{introStep < introSteps.length && <button type="button" onClick={() => setIntroStep(introSteps.length)}>Show result</button>}</div>
+      <CareerSignalPreview step={introStep} />
     </div>
     <div className="hero-scroll"><span>Scroll to enter the system</span><i /></div>
   </section>;
@@ -76,17 +74,103 @@ function CareerProfile() {
 
 const dimensions = [["Career alignment", 92], ["Skills alignment", 88], ["Experience", 76], ["Seniority", 81], ["Compensation", 90], ["Location", 100], ["Education", 68], ["Certifications", 55], ["Freshness", 96], ["Competitiveness", 72]] as const;
 
-function JobIntelligence() {
-  const [selected, setSelected] = useState("Required skills");
-  const requirements = ["Responsibilities", "Required skills", "Preferred skills", "Experience", "Education", "Location", "Work arrangement", "Compensation"];
+const requirementInsights = {
+  Responsibilities: {
+    extracted: "Build reliable client automations and translate operational needs into documented workflows.",
+    context: "This is the core work of the role, so Hanaply compares it with delivered projects—not job-title similarity.",
+    verified: ["Workflow delivery", "Built and documented n8n automations"],
+    transferable: ["Client discovery", "Operations interviews map to solution discovery"],
+    gap: ["Solution diagrams", "Formal architecture diagrams need practice"],
+    dimensions: ["Career alignment", "Experience"],
+    effect: "Strengthens the match",
+    verdict: "The sample profile already shows the role's main work in real projects.",
+  },
+  "Required skills": {
+    extracted: "Hands-on n8n, API integration, workflow debugging, and clear technical documentation.",
+    context: "Required skills carry more weight than preferred tools because the role expects them from day one.",
+    verified: ["n8n + API integration", "Direct evidence appears in two sample projects"],
+    transferable: ["TypeScript + Supabase", "Backend experience supports workflow debugging"],
+    gap: ["Enterprise monitoring", "Production observability is not yet verified"],
+    dimensions: ["Skills alignment", "Experience"],
+    effect: "Supports a strong fit",
+    verdict: "The essential technical requirements are covered; one production-depth gap remains visible.",
+  },
+  "Preferred skills": {
+    extracted: "Experience with AI-assisted workflows, process mapping, and customer-facing delivery is preferred.",
+    context: "Preferred skills improve competitiveness, but missing one should not become a hard blocker.",
+    verified: ["Process documentation", "Verified workflow documentation is relevant"],
+    transferable: ["AI workflow design", "Prototype work transfers to this preference"],
+    gap: ["Vendor certification", "Useful, but not required for application"],
+    dimensions: ["Skills alignment", "Competitiveness"],
+    effect: "Adds supporting evidence",
+    verdict: "The profile meets enough preferences to stay competitive without overstating expertise.",
+  },
+  Experience: {
+    extracted: "Two or more years delivering automation or technical operations projects for real users.",
+    context: "Hanaply separates years of relevant work from years spent under an identical title.",
+    verified: ["3 years of delivery", "Workflow and operations projects meet the threshold"],
+    transferable: ["Technical operations", "Adjacent delivery experience counts as relevant"],
+    gap: ["Role-title history", "No formal Solutions Engineer title"],
+    dimensions: ["Experience", "Seniority"],
+    effect: "Meets the experience bar",
+    verdict: "Relevant delivery evidence matters more here than an exact previous title.",
+  },
+  Education: {
+    extracted: "A technical degree or equivalent practical experience is acceptable.",
+    context: "The posting explicitly accepts equivalent experience, so education is not treated as a blocker.",
+    verified: ["Relevant coursework", "Information systems coursework is recorded"],
+    transferable: ["Practical experience", "Delivered systems support equivalency"],
+    gap: ["Completed degree", "A completed technical degree is not verified"],
+    dimensions: ["Education", "Certifications"],
+    effect: "Keeps the role viable",
+    verdict: "Practical experience offsets the education gap under the employer's stated requirement.",
+  },
+  Location: {
+    extracted: "Applicants must be based in the Philippines and able to overlap with Manila business hours.",
+    context: "Location is checked as a deterministic constraint before softer matching dimensions.",
+    verified: ["Philippines eligibility", "Sample profile is based in Manila"],
+    transferable: ["Time-zone overlap", "Existing work history matches required hours"],
+    gap: ["Occasional travel", "Quarterly Makati travel needs confirmation"],
+    dimensions: ["Location"],
+    effect: "Clears a hard constraint",
+    verdict: "The role remains actionable because location and working-hour requirements are satisfied.",
+  },
+  "Work arrangement": {
+    extracted: "Remote-first, with optional team days and quarterly in-person planning in Makati.",
+    context: "The arrangement is compared with explicit work preferences rather than inferred from keywords.",
+    verified: ["Remote preference", "Remote or hybrid work is selected"],
+    transferable: ["Hybrid collaboration", "Prior hybrid delivery supports team days"],
+    gap: ["Planning travel", "Quarterly attendance still needs confirmation"],
+    dimensions: ["Career alignment", "Location"],
+    effect: "Matches work preferences",
+    verdict: "The normal arrangement fits; only occasional travel needs a human review.",
+  },
+  Compensation: {
+    extracted: "The posted range is ₱80,000–₱110,000 per month, subject to final leveling.",
+    context: "Hanaply checks the disclosed range against the person's target without inventing an offer.",
+    verified: ["Target range overlap", "The sample target sits inside the posted range"],
+    transferable: ["Leveling flexibility", "Relevant projects support mid-level review"],
+    gap: ["Total package", "Benefits and equity are not disclosed"],
+    dimensions: ["Compensation"],
+    effect: "Meets the salary target",
+    verdict: "Base compensation aligns, while undisclosed package details remain a review item.",
+  },
+} as const;
+
+type RequirementName = keyof typeof requirementInsights;
+
+export function JobIntelligence() {
+  const [selected, setSelected] = useState<RequirementName>("Responsibilities");
+  const requirements = Object.keys(requirementInsights) as RequirementName[];
+  const insight = requirementInsights[selected];
   return <section className="intelligence-section section-pad"><div className="content-shell"><SectionIntro index="04" eyebrow="AI job intelligence" title={<>Not “do the keywords match?”<br /><em>Does this role make sense?</em></>} copy="A verdict is the result of visible dimensions, extracted requirements, deterministic blockers, and grounded career evidence." /><div className="intelligence-console">
-    <div className="requirement-pane"><div className="console-label"><Code2 size={16} /> Requirement extraction <strong>DEMONSTRATION DATA</strong></div><div className="jd-card"><span>Atlas Workflow</span><h3>Automation Solutions Engineer</h3><p>Build and maintain client automations, translate operational needs, document reliable workflows, and partner with technical teams.</p></div><div className="requirement-list">{requirements.map((item, index) => <button type="button" key={item} className={selected === item ? "active" : ""} onClick={() => setSelected(item)}><span>{String(index + 1).padStart(2, "0")}</span>{item}<ChevronRight size={15} /></button>)}</div></div>
-    <div className="classification-pane"><div className="console-label"><Sparkles size={16} /> Classified requirements <span>Selected: {selected}</span></div><div className="classification-cards"><article className="verified"><Check size={16} /><div><span>Verified match</span><strong>n8n workflow delivery</strong><small>Supported by project evidence</small></div></article><article className="transfer"><ArrowRight size={16} /><div><span>Transferable</span><strong>Client discovery</strong><small>Maps to solutions consultation</small></div></article><article className="learnable"><Clock3 size={16} /><div><span>Learnable gap</span><strong>Formal solution diagrams</strong><small>Practical preparation recommended</small></div></article></div><div className="dimension-chart">{dimensions.map(([label, score]) => <div key={label}><span>{label}</span><i><em style={{ width: `${score}%` }} /></i><strong>{score}</strong></div>)}</div><div className="verdict-card"><span className="signal-orb mint" /><div><small>EXPLAINABLE VERDICT</small><strong>Strong Match</strong><p>Apply after a focused review. One gap is learnable and no hard blockers were found.</p></div><b>88</b></div></div>
+    <div className="requirement-pane"><div className="console-label"><Code2 size={16} /> Requirement extraction <strong>DEMONSTRATION DATA</strong></div><div className="jd-card"><span>Atlas Workflow</span><h3>Automation Solutions Engineer</h3><p>Build and maintain client automations, translate operational needs, document reliable workflows, and partner with technical teams.</p></div><p className="requirement-helper">Choose a requirement to inspect its evidence and see how it affects the recommendation.</p><div className="requirement-list" role="tablist" aria-label="Extracted job requirements" onKeyDown={(event) => { if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return; event.preventDefault(); const tabs = [...event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="tab"]')]; const current = tabs.indexOf(document.activeElement as HTMLButtonElement); const next = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : event.key === "ArrowDown" ? (current + 1) % tabs.length : (current - 1 + tabs.length) % tabs.length; tabs[next]?.focus(); tabs[next]?.click(); }}>{requirements.map((item, index) => <button type="button" id={`requirement-tab-${index}`} role="tab" aria-selected={selected === item} aria-controls="classified-requirement-panel" tabIndex={selected === item ? 0 : -1} key={item} className={selected === item ? "active" : ""} onClick={() => setSelected(item)}><span>{String(index + 1).padStart(2, "0")}</span>{item}<ChevronRight size={15} /></button>)}</div></div>
+    <div className="classification-pane" id="classified-requirement-panel" role="tabpanel" aria-labelledby={`requirement-tab-${requirements.indexOf(selected)}`} aria-live="polite"><div className="console-label"><Sparkles size={16} /> Classified requirements <span>Inspecting: {selected}</span></div><div className="selection-explanation" key={selected}><span>EXTRACTED REQUIREMENT</span><strong>{insight.extracted}</strong><p>{insight.context}</p></div><div className="classification-cards"><article className="verified"><Check size={16} /><div><span>Verified match</span><strong>{insight.verified[0]}</strong><small>{insight.verified[1]}</small></div></article><article className="transfer"><ArrowRight size={16} /><div><span>Transferable</span><strong>{insight.transferable[0]}</strong><small>{insight.transferable[1]}</small></div></article><article className="learnable"><Clock3 size={16} /><div><span>Gap to review</span><strong>{insight.gap[0]}</strong><small>{insight.gap[1]}</small></div></article></div><div className="dimension-chart">{dimensions.map(([label, score]) => <div className={(insight.dimensions as readonly string[]).includes(label) ? "selected" : ""} key={label}><span>{label}</span><i><em style={{ width: `${score}%` }} /></i><strong>{score}</strong></div>)}</div><div className="verdict-card"><span className="signal-orb mint" /><div><small>HOW THIS AFFECTS THE VERDICT</small><strong>{insight.effect}</strong><p>{insight.verdict}</p></div><b>88</b></div></div>
   </div></div></section>;
 }
 
-function TruthGate() {
-  return <section className="truth-section section-pad"><div className="content-shell"><SectionIntro index="05" eyebrow="Truth Gate" title={<>AI should help you present the truth,<br /><em>not invent a career.</em></>} copy="Generated documents are useful only when every meaningful claim stays grounded in facts the person has verified." light /><TruthGateDemo /></div></section>;
+function ClaimVerification() {
+  return <section className="claim-verification-section section-pad"><div className="content-shell"><SectionIntro index="05" eyebrow="Claim verification" title={<>AI should help you present the truth,<br /><em>not invent a career.</em></>} copy="Before a document is shown, Hanaply compares its claims with confirmed career details and removes anything unsupported." light /><ClaimVerificationDemo /></div></section>;
 }
 
 function ApplicationPacks() {
@@ -110,7 +194,7 @@ function RoadmapPreview() {
 }
 
 function ArchitecturePreview() {
-  const flow = ["Sources", "Normalize", "Match", "Analyze", "Truth Gate", "Pack", "Clients"];
+  const flow = ["Sources", "Normalize", "Match", "Analyze", "Verify claims", "Pack", "Clients"];
   return <section className="architecture-preview section-pad"><div className="content-shell"><SectionIntro index="12" eyebrow="Shared intelligence architecture" title={<>One career system.<br /><em>Many trusted surfaces.</em></>} copy="Business rules, evidence, entitlements, and safety controls stay in a shared backend instead of drifting between web and future mobile clients." /><div className="architecture-stage"><div className="arch-flow">{flow.map((item, index) => <div key={item} className={index === 4 ? "protected" : ""}><span>{index === 4 ? <ShieldCheck size={17} /> : index < 2 ? <Globe2 size={17} /> : index > 4 ? <FileCheck2 size={17} /> : <Boxes size={17} />}</span><strong>{item}</strong>{index < flow.length - 1 && <i><ArrowRight size={14} /></i>}</div>)}</div><div className="arch-support"><span>Supabase Auth</span><span>PostgreSQL + RLS</span><span>LLM Providers</span><span>Audit Logs</span><span>Feature Flags</span></div></div><div className="section-cta dark-cta"><div><span>Inspect every boundary</span><p>Open a node to see inputs, outputs, ownership, failure behavior, and mobile relevance.</p></div><Link className="primary-button" href="/architecture">Explore the architecture <ArrowRight size={17} /></Link></div></div></section>;
 }
 
@@ -119,5 +203,5 @@ function MobileFuture() {
 }
 
 function Principles() {
-  return <section className="principles-section section-pad"><div className="content-shell"><SectionIntro index="14" eyebrow="Product principles" title={<>The system is ambitious.<br /><em>The rules stay simple.</em></>} copy="These principles define how Hanaply should make decisions when speed, persuasion, and product integrity compete." /><div className="principles-list">{principles.map(([title, copy], index) => <article key={title}><span>{String(index + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{copy}</p><i /></article>)}</div><div className="final-statement"><span className="status-kicker"><i />PRODUCT VISION</span><h2>This is not just a job board.<br />It is an intelligent career system.</h2><div><p>Explore how Hanaply may be built, where the work stands, and what remains deliberately planned.</p><div><Link className="primary-button light-button" href="/build-status">View Build Status <ArrowRight size={17} /></Link><Link className="secondary-button inverse-button" href="/docs">Read the documentation <ArrowUpRight size={17} /></Link></div></div></div></div></section>;
+  return <section className="principles-section section-pad"><div className="content-shell"><SectionIntro index="14" eyebrow="Product principles" title={<>The system is ambitious.<br /><em>The rules stay simple.</em></>} copy="These principles define how Hanaply should make decisions when speed, persuasion, and product integrity compete." /><div className="principles-list">{principles.map(([title, copy], index) => <article key={title}><span>{String(index + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{copy}</p><i /></article>)}</div><div className="final-statement"><span className="status-kicker"><i />PRODUCT VISION</span><h2>This is not just a job board.<br />It is an intelligent career system.</h2><div><p>Explore how Hanaply finds relevant roles, explains fit, and prepares stronger applications.</p><div><a className="primary-button light-button" href="#career-radar">Explore Career Radar <ArrowRight size={17} /></a><Link className="secondary-button inverse-button" href="/docs">Read the documentation <ArrowUpRight size={17} /></Link></div></div></div></div></section>;
 }

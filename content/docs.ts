@@ -26,10 +26,10 @@ export const docs: DocPage[] = [
     ],
   },
   {
-    slug: "truth-gate",
-    eyebrow: "AI safety",
-    title: "Truth Gate",
-    summary: "A generation boundary that blocks claims unsupported by verified career facts.",
+    slug: "claim-verification",
+    eyebrow: "Profile-backed writing",
+    title: "Claim verification",
+    summary: "How Hanaply removes statements that are not supported by confirmed career details.",
     phase: "Phase 6",
     sections: [
       { heading: "Ground every claim", body: "Meaningful claims in generated documents must point back to verified employment, projects, tools, education, certifications, or other approved evidence." },
@@ -64,11 +64,11 @@ export const docs: DocPage[] = [
     slug: "security",
     eyebrow: "Trust foundation",
     title: "Security",
-    summary: "Career documents and administrative controls need strict, testable boundaries.",
+    summary: "Career documents and administrative controls need clear, enforceable boundaries.",
     phase: "Phase 0",
     sections: [
       { heading: "Data separation", body: "Customer documents and career facts remain tenant-scoped. Administrative capabilities use a separate boundary and every sensitive action is auditable." },
-      { heading: "Provider safety", body: "AI providers receive only necessary context. Secrets remain server-side, prompts are versioned, and provider output is treated as untrusted until validated." },
+      { heading: "Provider safety", body: "AI providers receive only necessary context. Secrets remain server-side, prompts are versioned, and provider output is treated as untrusted until reviewed." },
       { heading: "Product controls", body: "Feature flags, platform settings, version requirements, rollback paths, and source pause controls let operators respond without rewriting clients." },
     ],
   },

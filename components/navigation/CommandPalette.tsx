@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ArrowUpRight, BookOpen, Boxes, CircleDollarSign, FileStack, Radar, Route, Search, ShieldCheck, Smartphone } from "lucide-react";
+import { ArrowUpRight, BookOpen, Boxes, CircleDollarSign, FileStack, Radar, Route, Search, Smartphone } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 const actions = [
@@ -11,7 +11,6 @@ const actions = [
   { label: "Open Architecture", hint: "System explorer", href: "/architecture", icon: Boxes },
   { label: "Open Pricing", hint: "Plus and Pro vision", href: "/#pricing", icon: CircleDollarSign },
   { label: "Open Mobile Future", hint: "Shared platform direction", href: "/#mobile", icon: Smartphone },
-  { label: "Open Build Status", hint: "Real implementation status", href: "/build-status", icon: ShieldCheck },
   { label: "Search documentation", hint: "Product reference", href: "/docs", icon: BookOpen },
 ];
 

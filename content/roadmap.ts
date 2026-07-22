@@ -79,7 +79,7 @@ const rawRoadmap = [
     title: "Application Packs",
     status: "Planned",
     purpose: "Turn worthy opportunities into truthful, review-ready application material.",
-    deliverables: ["Truth Gate", "Cover letters and tailored resumes", "Variations and templates", "Editing, PDF, and DOCX", "Usage limits"],
+    deliverables: ["Claim verification", "Cover letters and tailored resumes", "Variations and templates", "Editing, PDF, and DOCX", "Usage limits"],
     dependencies: ["Phase 3", "Phase 5"],
     gates: ["Every claim is grounded", "Documents remain editable", "Exports pass ATS checks"],
     risks: ["Fabricated or overstated claims", "Template formatting regressions"],

@@ -26,11 +26,10 @@ test("server-renders the Hanaply product vision without starter metadata", async
   assert.doesNotMatch(html, /Your site is taking shape|react-loading-skeleton/i);
 });
 
-test("renders dedicated roadmap, architecture, build status, and docs routes", async () => {
+test("renders dedicated roadmap, architecture, and docs routes", async () => {
   const cases = [
     ["/roadmap", /product journey built/i],
     ["/architecture", /one shared platform/i],
-    ["/build-status", /development status, not product availability/i],
     ["/docs/product", /Not another job board/i],
   ];
   for (const [pathname, marker] of cases) {

@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { roadmap } from "@/content/roadmap";
 import { architectureNodes } from "@/content/architecture";
-import { buildStatus } from "@/content/build-status";
 import { plans } from "@/content/plans";
 import { readFileSync } from "node:fs";
 
@@ -15,11 +14,6 @@ describe("owner-editable content", () => {
   it("describes every architecture node with failure and mobile behavior", () => {
     expect(architectureNodes.length).toBeGreaterThan(10);
     expect(architectureNodes.every((node) => node.failure.length > 10 && node.mobile.length > 10)).toBe(true);
-  });
-
-  it("uses an explicit non-live build decision", () => {
-    expect(buildStatus.decision).toBe("CONDITIONAL GO");
-    expect(buildStatus.limitations.join(" ")).toMatch(/demonstrations/i);
   });
 
   it("calculates the advertised annual savings honestly", () => {

@@ -16,8 +16,8 @@ The future production SaaS should live in its own application boundary. Prototyp
 - React 19 and strict TypeScript
 - CSS token and responsive layout system
 - Motion as the primary animation system
-- React Three Fiber, Drei, and Three.js for the Career Radar signal pipeline and career evidence map
-- Zod for roadmap, architecture, pricing, and Build Status validation
+- React Three Fiber, Drei, and Three.js for the interactive career evidence map
+- Zod for roadmap, architecture, and pricing content validation
 - Vitest, Testing Library, and Node test for automated checks
 
 ## Local setup
@@ -48,9 +48,8 @@ npm test             # build, unit tests, and rendered-route tests
 - `/` is the main product vision experience.
 - `/roadmap` exposes every phase, dependency, gate, risk, and owner decision.
 - `/architecture` exposes node inputs, outputs, security, ownership, failure behavior, and mobile relevance.
-- `/build-status` reports real implementation status and limitations.
 - `/docs` is the structured documentation index.
-- `/docs/[slug]` renders product, career intelligence, Truth Gate, architecture, roadmap, security, and mobile-readiness documents.
+- `/docs/[slug]` renders product, career intelligence, claim verification, architecture, roadmap, security, and mobile-readiness documents.
 
 The main story uses deep links for Career Radar, Application Packs, pricing, and mobile future sections.
 
@@ -62,10 +61,9 @@ Owner-editable product content is separated from presentation and animation:
 - `content/architecture.ts`
 - `content/plans.ts`
 - `content/principles.ts`
-- `content/build-status.ts`
 - `content/docs.ts`
 
-Zod schemas live in `lib/content-schema.ts`. Invalid roadmap statuses, Build Status decisions, plans, or architecture layers fail during import and build.
+Zod schemas live in `lib/content-schema.ts`. Invalid roadmap statuses, plans, or architecture layers fail during import and build.
 
 See [docs/CONTENT_EDITING.md](docs/CONTENT_EDITING.md) for the editing workflow.
 
@@ -75,20 +73,13 @@ Update only `content/roadmap.ts`. Allowed values are `Planned`, `In Design`, `In
 
 Do not mark a phase complete based on this vision website. A production phase should become complete only after its acceptance gates are met and the owner-approved source of truth changes.
 
-## Build Status editing
-
-Update `content/build-status.ts` with dated, evidence-based project state. Decisions are limited to `GO`, `CONDITIONAL GO`, and `NO-GO`.
-
-This file currently describes the vision website only. It explicitly states that the production SaaS remains planned.
-
 ## Three.js architecture
 
-Three.js is isolated in `components/three/ProductScenes.tsx`. The scenes communicate product logic rather than decorate the page:
+Three.js is isolated in `components/three/ProductScenes.tsx` and used only where spatial interaction adds meaning:
 
-- Career Radar: job signals move through raw, profile-rule, and worthwhile stages
 - Career evidence map: a verified profile connects relevant evidence to one sample role
 
-Scenes use adaptive pixel density, lower-power checks, visibility tracking, and accessible flat fallbacks. Reduced motion and small or lower-power devices receive the fallback instead of requiring WebGL. Scene information is repeated in semantic text.
+The hero opportunity review and Career Radar use semantic interface components instead of WebGL. The evidence scene uses adaptive pixel density, lower-power checks, visibility tracking, and an accessible flat fallback. Reduced-motion and small or lower-power devices receive the fallback instead of requiring WebGL.
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the broader application structure.
 
@@ -106,7 +97,7 @@ Automated coverage includes:
 - Roadmap uniqueness and status discipline
 - Architecture failure and mobile behavior requirements
 - Pricing savings calculations
-- Truth Gate interaction
+- Claim-verification interaction
 - Resume-strategy interaction
 - Server-rendered route smoke tests
 
@@ -121,15 +112,14 @@ It also supports Vercel through `vercel.json`. Vercel must use the Next.js frame
 Before deployment:
 
 1. Run `npm test`.
-2. Review `content/build-status.ts`.
-3. Confirm canonical host metadata in `app/layout.tsx`, `app/sitemap.ts`, and `app/robots.ts`.
-4. Confirm public access and product-availability language.
-5. Approve the exact version for release.
+2. Confirm canonical host metadata in `app/layout.tsx`, `app/sitemap.ts`, and `app/robots.ts`.
+3. Confirm public access and product-availability language.
+4. Approve the exact version for release.
 
 ## Performance considerations
 
-- Three.js scenes are client-only and lazy loaded.
-- WebGL rendering is paused by unmounting off-screen scenes.
+- The Three.js evidence scene is client-only and lazy loaded.
+- WebGL rendering is paused by unmounting the off-screen scene.
 - Device capability and viewport size reduce rendering quality or choose a static fallback.
 - Fonts use optimized Next.js loading.
 - The social card is a single optimized project asset.
@@ -139,8 +129,7 @@ Before deployment:
 
 - The Career Radar uses deterministic fictional results for storytelling.
 - Product and admin previews do not contain production business logic.
-- Build Status requires manual owner-approved updates.
 - The social metadata assumes `https://hanaply.com` until deployment configuration is approved.
-- The lazy Three.js scene bundle is intentionally isolated, but it still triggers a large-chunk build warning and should be profiled against the production performance budget.
+- The lazy Three.js evidence bundle is intentionally isolated, but it still triggers a large-chunk build warning and should be profiled against the production performance budget.
 - The in-app review browser could not access the local server because of its local-network security policy. Automated route and interaction checks passed, but visual viewport review remains an external release condition.
 - Production performance and accessibility audits must be repeated in the final hosting environment.

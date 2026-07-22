@@ -74,7 +74,6 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
             <button className="command-trigger" type="button" onClick={() => setPaletteOpen(true)} aria-label="Open command palette">
               <Search size={16} /><span>Explore</span><kbd>⌘K</kbd>
             </button>
-            <Link className="status-link" href="/build-status"><span className="status-dot" />Build status</Link>
             <button className="menu-trigger" type="button" aria-expanded={menuOpen} aria-controls="mobile-menu" onClick={() => setMenuOpen((value) => !value)}>
               {menuOpen ? <X size={22} /> : <Menu size={22} />}<span className="sr-only">{menuOpen ? "Close menu" : "Open menu"}</span>
             </button>
@@ -83,7 +82,6 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
         {menuOpen && (
           <nav id="mobile-menu" className="mobile-nav" aria-label="Mobile navigation">
             {nav.map(([label, href]) => <Link key={href} href={href} onClick={() => { setMenuOpen(false); if (href.startsWith("/#")) setActiveSection(href.slice(2)); }}>{label}<span aria-hidden="true">↗</span></Link>)}
-            <Link href="/build-status" onClick={() => setMenuOpen(false)}>Build Status <span className="status-dot" /></Link>
           </nav>
         )}
       </header>
@@ -109,7 +107,6 @@ function Footer() {
         <Link href="/roadmap">Roadmap</Link>
         <Link href="/architecture">Architecture</Link>
         <Link href="/docs">Documentation</Link>
-        <Link href="/build-status">Build Status</Link>
       </nav>
     </footer>
   );
