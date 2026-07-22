@@ -34,7 +34,7 @@ Components are grouped by product concept:
 
 ### Three.js
 
-React Three Fiber owns the canvas lifecycle. Scenes use Drei only for focused helpers such as line geometry, HTML labels, adaptive pixel density, and restrained orbit controls.
+React Three Fiber owns the canvas lifecycle. Scenes use Drei only for focused helpers such as line geometry, HTML labels, and adaptive pixel density. The scenes use fixed career-data layouts instead of orbital controls.
 
 Capability checks choose between spatial and flat diagrams. Intersection Observer removes off-screen canvas work. React unmounting handles Three.js resource disposal.
 

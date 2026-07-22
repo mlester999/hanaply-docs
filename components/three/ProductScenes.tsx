@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { AdaptiveDpr, Html, Line, OrbitControls } from "@react-three/drei";
+import { AdaptiveDpr, Html, Line } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -33,37 +33,41 @@ function useVisible<T extends HTMLElement>() {
   return { ref, visible };
 }
 
-const signalPositions: [number, number, number][] = [
-  [-2.8, 0.25, -0.8], [-2.1, 1.3, -0.2], [-1.45, -1.1, 0.2], [2.55, 1.15, -0.4],
-  [2.7, -0.65, 0.1], [1.55, 0.35, 0.5], [0.7, -1.55, -0.4], [-0.55, 1.65, -0.6],
-];
+const signalPositions = [
+  [-2.45, 1.45, "raw"], [-1.4, 1.45, "raw"], [0.25, 1.45, "raw"], [1.65, 1.45, "raw"],
+  [-1.8, 0, "filtered"], [-0.25, 0, "filtered"], [1.25, 0, "filtered"],
+  [0.75, -1.45, "worthwhile"],
+] as const;
 
 function SignalField({ lowPower }: { lowPower: boolean }) {
   const scan = useRef<THREE.Group>(null);
-  const nodes = useRef<THREE.Group>(null);
-  useFrame((state, delta) => {
-    if (scan.current) scan.current.rotation.z -= delta * 0.42;
-    if (nodes.current) nodes.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.18) * 0.06;
+  useFrame((state) => {
+    if (scan.current) scan.current.position.x = -3.1 + ((state.clock.elapsedTime * 0.72) % 6.2);
   });
   return (
-    <group rotation={[-Math.PI / 2.35, 0, 0.1]}>
-      <ambientLight intensity={1.2} />
-      <pointLight position={[0, 1, 4]} color="#7091ff" intensity={18} distance={12} />
-      {[1.05, 2.1, 3.15].map((radius) => <mesh key={radius}><torusGeometry args={[radius, 0.012, 8, lowPower ? 64 : 120]} /><meshBasicMaterial color="#5276f3" transparent opacity={0.38} /></mesh>)}
+    <group>
+      <ambientLight intensity={1.5} />
+      <pointLight position={[1, 2, 5]} color="#7091ff" intensity={16} distance={12} />
+      <gridHelper args={[7.6, lowPower ? 12 : 18, "#263b7e", "#172342"]} rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -0.55]} />
+      {[[1.45, "RAW JOB SIGNALS"], [0, "PROFILE RULES"], [-1.45, "WORTHWHILE SET"]].map(([y, label]) => <group key={label as string}>
+        <Line points={[[-3.05, y as number, -0.1], [3.05, y as number, -0.1]]} color="#334a8f" lineWidth={1} transparent opacity={0.6} />
+        <Html position={[-2.95, (y as number) + 0.35, 0]} center={false} distanceFactor={9}><span className="scene-axis-label">{label as string}</span></Html>
+      </group>)}
       <group ref={scan}>
-        <mesh position={[1.65, 0, 0.01]} rotation={[0, 0, -0.55]}><planeGeometry args={[3.2, 0.035]} /><meshBasicMaterial color="#5d7df1" transparent opacity={0.7} /></mesh>
-        <mesh position={[0, 0, 0.015]}><circleGeometry args={[3.2, 48, 0, 0.58]} /><meshBasicMaterial color="#3157e8" transparent opacity={0.08} side={THREE.DoubleSide} /></mesh>
+        <mesh position={[0, 0, 0.08]}><planeGeometry args={[0.035, 3.8]} /><meshBasicMaterial color="#6f8cff" transparent opacity={0.85} /></mesh>
+        <mesh position={[0.12, 0, 0.02]}><planeGeometry args={[0.25, 3.8]} /><meshBasicMaterial color="#3157e8" transparent opacity={0.07} /></mesh>
       </group>
-      <group ref={nodes}>
-        {signalPositions.map((position, index) => {
-          const strong = index === 5 || index === 7;
-          return <group key={index} position={position}>
-            <mesh><sphereGeometry args={[strong ? 0.105 : 0.065, 16, 16]} /><meshStandardMaterial color={strong ? "#22c7a9" : "#5e78bd"} emissive={strong ? "#22c7a9" : "#3157e8"} emissiveIntensity={strong ? 3 : 0.6} /></mesh>
-            {strong && <mesh><ringGeometry args={[0.16, 0.19, 28]} /><meshBasicMaterial color="#22c7a9" transparent opacity={0.55} side={THREE.DoubleSide} /></mesh>}
-          </group>;
-        })}
-      </group>
-      <mesh position={[0, 0, 0.08]}><sphereGeometry args={[0.16, 24, 24]} /><meshStandardMaterial color="#f6f8fc" emissive="#3157e8" emissiveIntensity={2.4} /></mesh>
+      {signalPositions.map(([x, y, stage], index) => {
+        const worthwhile = stage === "worthwhile";
+        const filtered = stage === "filtered";
+        const color = worthwhile ? "#22c7a9" : filtered ? "#6f8cff" : "#50638f";
+        return <mesh key={index} position={[x, y, worthwhile ? 0.25 : 0]}>
+          <boxGeometry args={[worthwhile ? 0.72 : 0.34, worthwhile ? 0.38 : 0.24, worthwhile ? 0.18 : 0.1]} />
+          <meshStandardMaterial color={color} emissive={color} emissiveIntensity={worthwhile ? 2.5 : filtered ? 0.9 : 0.35} transparent opacity={stage === "raw" ? 0.65 : 1} />
+        </mesh>;
+      })}
+      <Line points={[[0.75, -0.08, 0], [0.75, -1.2, 0]]} color="#22c7a9" lineWidth={1.5} transparent opacity={0.8} />
+      <Html position={[1.25, -1.45, 0.3]} center distanceFactor={8}><div className="scene-match-card"><small>EXPLAINED MATCH</small><strong>88</strong><span>Atlas Workflow</span></div></Html>
     </group>
   );
 }
@@ -94,34 +98,35 @@ function RadarFallback() {
 }
 
 const clusters = [
-  { label: "Experience", color: "#3157e8", pos: [-2.7, 1.2, 0.2] as [number, number, number] },
-  { label: "Skills", color: "#22c7a9", pos: [2.55, 1.35, 0.4] as [number, number, number] },
-  { label: "Projects", color: "#3157e8", pos: [-2.5, -1.4, 0.5] as [number, number, number] },
-  { label: "Tools", color: "#22c7a9", pos: [2.65, -1.15, 0.25] as [number, number, number] },
-  { label: "Education", color: "#6c83c9", pos: [0.2, 2.15, -0.5] as [number, number, number] },
-  { label: "Preferences", color: "#ff7a59", pos: [0.1, -2.2, -0.3] as [number, number, number] },
+  { label: "Experience", color: "#3157e8", pos: [0, 1.9, 0] as [number, number, number] },
+  { label: "Skills", color: "#22c7a9", pos: [0, 1.15, 0] as [number, number, number] },
+  { label: "Projects", color: "#3157e8", pos: [0, 0.38, 0] as [number, number, number] },
+  { label: "Tools", color: "#22c7a9", pos: [0, -0.38, 0] as [number, number, number] },
+  { label: "Education", color: "#6c83c9", pos: [0, -1.15, 0] as [number, number, number] },
+  { label: "Preferences", color: "#ff7a59", pos: [0, -1.9, 0] as [number, number, number] },
 ];
 
-function Constellation({ selected, onSelect }: { selected: string; onSelect: (value: string) => void }) {
-  const group = useRef<THREE.Group>(null);
-  useFrame((_, delta) => { if (group.current) group.current.rotation.y += delta * 0.05; });
-  const center: [number, number, number] = [0, 0, 0];
+function EvidenceGraph({ selected, onSelect }: { selected: string; onSelect: (value: string) => void }) {
+  const profile: [number, number, number] = [-2.7, 0, 0];
+  const target: [number, number, number] = [2.7, 0, 0];
   return (
-    <group ref={group}>
+    <group>
       <ambientLight intensity={1.6} /><pointLight position={[0, 3, 5]} intensity={22} color="#7091ff" />
       {clusters.map((node) => <group key={node.label}>
-        <Line points={[center, node.pos]} color={selected === node.label ? "#22c7a9" : "#3157e8"} lineWidth={selected === node.label ? 2 : 1} transparent opacity={selected === node.label ? 0.9 : 0.3} />
+        <Line points={[profile, node.pos]} color={selected === node.label ? "#6f8cff" : "#344a83"} lineWidth={selected === node.label ? 2 : 1} transparent opacity={selected === node.label ? 0.95 : 0.45} />
+        <Line points={[node.pos, target]} color={selected === node.label ? "#22c7a9" : "#26395f"} lineWidth={selected === node.label ? 2 : 1} transparent opacity={selected === node.label ? 0.9 : 0.32} />
         <mesh position={node.pos} onClick={(event) => { event.stopPropagation(); onSelect(node.label); }}>
-          <sphereGeometry args={[selected === node.label ? 0.25 : 0.18, 24, 24]} />
+          <boxGeometry args={[1.35, 0.42, selected === node.label ? 0.2 : 0.12]} />
           <meshStandardMaterial color={node.color} emissive={node.color} emissiveIntensity={selected === node.label ? 2.6 : 1} />
         </mesh>
-        <Html position={[node.pos[0], node.pos[1] - 0.38, node.pos[2]]} center distanceFactor={9}>
+        <Html position={[node.pos[0], node.pos[1], node.pos[2] + 0.16]} center distanceFactor={9}>
           <button className={`scene-label ${selected === node.label ? "active" : ""}`} onClick={() => onSelect(node.label)}>{node.label}</button>
         </Html>
       </group>)}
-      <mesh><sphereGeometry args={[0.43, 32, 32]} /><meshStandardMaterial color="#f6f8fc" emissive="#3157e8" emissiveIntensity={2.4} /></mesh>
-      <Html position={[0, -0.72, 0]} center distanceFactor={8}><span className="scene-core-label">Career Identity</span></Html>
-      <OrbitControls enablePan={false} enableZoom={false} minPolarAngle={Math.PI / 2.5} maxPolarAngle={Math.PI / 1.65} rotateSpeed={0.4} />
+      <mesh position={profile}><boxGeometry args={[1.5, 0.9, 0.18]} /><meshStandardMaterial color="#243d91" emissive="#3157e8" emissiveIntensity={1.4} /></mesh>
+      <Html position={profile} center distanceFactor={8}><span className="scene-core-label">Verified<br />career profile</span></Html>
+      <mesh position={target}><boxGeometry args={[1.5, 1.05, 0.2]} /><meshStandardMaterial color="#164d52" emissive="#22c7a9" emissiveIntensity={1.4} /></mesh>
+      <Html position={target} center distanceFactor={8}><span className="scene-target-label">Sample role<br /><b>88 match</b></span></Html>
     </group>
   );
 }
@@ -144,16 +149,17 @@ export function CareerConstellationScene() {
   const canRender = !reduced && !lowPower && !flat && visible && !webglUnavailable;
   return (
     <div ref={ref} className="constellation-experience">
-      <div className="scene-toolbar"><span>Demonstration Data</span><button type="button" onClick={() => setFlat((value) => !value)}>{flat ? "Show spatial view" : "Use flat diagram"}</button></div>
-      <div className="constellation-canvas" aria-label="Career profile constellation with selectable evidence clusters">
-        {canRender ? <Canvas camera={{ position: [0, 0, 7.5], fov: 42 }} dpr={[1, 1.4]} fallback={<div className="flat-constellation"><div className="flat-core">Career<br />Identity</div></div>} gl={{ alpha: true, powerPreference: "high-performance" }} onCreated={({ gl }) => gl.domElement.addEventListener("webglcontextlost", () => setWebglUnavailable(true), { once: true })}><Constellation selected={selected} onSelect={setSelected} /><AdaptiveDpr /></Canvas> : (
-          <div className="flat-constellation">
-            <div className="flat-core">Career<br />Identity</div>
-            {clusters.map((cluster, index) => <button type="button" key={cluster.label} className={`flat-node n${index + 1} ${selected === cluster.label ? "active" : ""}`} onClick={() => setSelected(cluster.label)}>{cluster.label}</button>)}
-          </div>
+      <div className="scene-toolbar"><span>Demonstration Data</span><button type="button" onClick={() => setFlat((value) => !value)}>{flat ? "Show depth view" : "Use flat diagram"}</button></div>
+      <div className="constellation-canvas" aria-label="Career evidence map connecting a verified profile to a sample job">
+        {canRender ? <Canvas camera={{ position: [0, 0, 7.5], fov: 42 }} dpr={[1, 1.4]} fallback={<FlatEvidenceMap selected={selected} onSelect={setSelected} />} gl={{ alpha: true, powerPreference: "high-performance" }} onCreated={({ gl }) => gl.domElement.addEventListener("webglcontextlost", () => setWebglUnavailable(true), { once: true })}><EvidenceGraph selected={selected} onSelect={setSelected} /><AdaptiveDpr /></Canvas> : (
+          <FlatEvidenceMap selected={selected} onSelect={setSelected} />
         )}
       </div>
       <div className="cluster-detail" aria-live="polite"><span>Relevant cluster</span><h3>{selected}</h3><ul>{clusterFacts[selected].map((fact) => <li key={fact}>{fact}</li>)}</ul><p><i /> Illuminated because this evidence supports the sample Automation Engineer role.</p></div>
     </div>
   );
+}
+
+function FlatEvidenceMap({ selected, onSelect }: { selected: string; onSelect: (value: string) => void }) {
+  return <div className="flat-constellation"><div className="flat-core">Verified<br />career profile</div><div className="flat-evidence-stack">{clusters.map((cluster) => <button type="button" key={cluster.label} className={`flat-node ${selected === cluster.label ? "active" : ""}`} onClick={() => onSelect(cluster.label)}>{cluster.label}</button>)}</div><div className="flat-target">Sample role<strong>88 match</strong></div></div>;
 }

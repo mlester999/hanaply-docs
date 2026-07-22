@@ -10,7 +10,7 @@ All local build, type, lint, automated interaction, content-schema, route-render
 
 ## 2. Visual direction
 
-The site uses cobalt blue as its primary identity, midnight product surfaces, soft neutral reading areas, mint success signals, and coral blocker states. Manrope drives display typography and Inter supports dense interface copy. Fine grid fields, signal rings, restrained glows, document surfaces, and architectural lines create a custom career-intelligence language without relying on generic dashboard decoration.
+The site uses cobalt blue as its primary identity, midnight product surfaces, soft neutral reading areas, mint success signals, and coral blocker states. Manrope drives display typography and Inter supports interface copy. A legibility pass establishes an 11 pixel absolute minimum with most compact UI text at 12 or 13 pixels. Fine grid fields, signal lanes, restrained glows, document surfaces, and architectural lines create a custom career-intelligence language without relying on generic dashboard decoration.
 
 The generated social card in `public/og.png` follows the same Career Radar visual system.
 
@@ -33,8 +33,8 @@ Implemented interactions include a skippable opening sequence, noise-reduction c
 
 `components/three/ProductScenes.tsx` contains the two isolated React Three Fiber scenes:
 
-- Career Signal Field: scanning rings and differentiated opportunity signals communicate discovery and filtering.
-- Career Profile Constellation: selectable evidence clusters show how a role activates verified career facts.
+- Career Signal Pipeline: job signals move through raw, profile-rule, and worthwhile stages.
+- Career Evidence Map: a verified profile connects selectable evidence clusters to one sample role.
 
 Both scenes use adaptive pixel density, off-screen unmounting, low-power checks, reduced-motion behavior, semantic descriptions, flat fallbacks, unsupported-WebGL fallbacks, and context-loss recovery.
 
@@ -66,7 +66,7 @@ The Application Pack connects a worthwhile sample job to AI job analysis, cover 
 
 ## 12. Responsive work
 
-The responsive system includes dedicated layout changes at 1280, 1050, 800, and 520 pixels. It restructures the hero, simulators, document panels, dashboard and admin previews, roadmap, architecture map, docs navigation, pricing, mobile orbit, and footer. Global horizontal overflow is clipped, touch layouts avoid desktop-only navigation, and dense interfaces collapse into one-column or flat forms.
+The responsive system includes dedicated layout changes at 1280, 1180, 1050, 800, and 520 pixels. It restructures the navigation, hero, simulators, document panels, dashboard and admin previews, roadmap, architecture map, docs navigation, pricing, mobile platform map, and footer. Global horizontal overflow is clipped, tablet and touch layouts use the hamburger menu, and dense interfaces collapse into one-column or flat forms.
 
 Automated source checks verify the breakpoint and overflow rules. Visual browser inspection at representative viewport widths is still required in an approved preview environment because the in-app browser security policy blocked the local server.
 
@@ -97,7 +97,7 @@ Coverage includes Zod-backed content integrity, roadmap status discipline, archi
 - ESLint: passed with zero reported errors
 - TypeScript: passed with zero reported errors
 - Production vinext build: passed on Vite 8.1.5
-- Vitest: 3 files passed, 13 tests passed
+- Vitest: 3 files passed, 14 tests passed
 - Node route tests: 2 tests passed, 0 failed
 - Dependency audit: 0 known vulnerabilities across production and development dependencies
 - User-facing em dash scan: 0 matches

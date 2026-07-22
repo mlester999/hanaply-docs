@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle, ArrowRight, Database, FileOutput, Fingerprint, Layers3, Radio, ShieldCheck, Smartphone, UserRoundCog } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { architectureNodes } from "@/content/architecture";
 
 const layerMeta = {
@@ -11,6 +11,12 @@ const layerMeta = {
 export function ArchitectureExplorer() {
   const [selected, setSelected] = useState("match");
   const [flat, setFlat] = useState(false);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      if (window.matchMedia("(max-width: 520px)").matches) setFlat(true);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
   const node = architectureNodes.find((item) => item.id === selected) ?? architectureNodes[0];
   return <div className="architecture-explorer">
     <div className="architecture-toolbar"><div>{Object.entries(layerMeta).map(([key, [label]]) => <span key={key}><i className={key} />{label}</span>)}</div><button type="button" onClick={() => setFlat((value) => !value)}>{flat ? "Show system map" : "Show flat diagram"}</button></div>

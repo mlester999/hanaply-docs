@@ -16,7 +16,7 @@ The future production SaaS should live in its own application boundary. Prototyp
 - React 19 and strict TypeScript
 - CSS token and responsive layout system
 - Motion as the primary animation system
-- React Three Fiber, Drei, and Three.js for the Career Radar and career-profile constellation
+- React Three Fiber, Drei, and Three.js for the Career Radar signal pipeline and career evidence map
 - Zod for roadmap, architecture, pricing, and Build Status validation
 - Vitest, Testing Library, and Node test for automated checks
 
@@ -39,6 +39,7 @@ npm run lint         # ESLint
 npm run typecheck    # strict TypeScript check
 npm run test:unit    # content and interaction tests
 npm run build        # production bundle
+npm run build:vercel # standard Next.js bundle for Vercel
 npm test             # build, unit tests, and rendered-route tests
 ```
 
@@ -84,8 +85,8 @@ This file currently describes the vision website only. It explicitly states that
 
 Three.js is isolated in `components/three/ProductScenes.tsx`. The scenes communicate product logic rather than decorate the page:
 
-- Career Radar: opportunity signals, filtering rings, and worthwhile-signal emphasis
-- Career-profile constellation: connected evidence clusters with selectable facts
+- Career Radar: job signals move through raw, profile-rule, and worthwhile stages
+- Career evidence map: a verified profile connects relevant evidence to one sample role
 
 Scenes use adaptive pixel density, lower-power checks, visibility tracking, and accessible flat fallbacks. Reduced motion and small or lower-power devices receive the fallback instead of requiring WebGL. Scene information is repeated in semantic text.
 
@@ -95,7 +96,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the broader application str
 
 Motion timing and easing live in `lib/motion.ts`. CSS uses the same easing curve. Motion explains signal filtering, requirement classification, evidence connection, document assembly, and product-state changes.
 
-`prefers-reduced-motion` disables spatial animation, smooth scrolling, orbit animation, long transitions, and animated WebGL scenes. All content and controls remain available.
+`prefers-reduced-motion` disables spatial animation, smooth scrolling, scanning animation, long transitions, and animated WebGL scenes. All content and controls remain available.
 
 ## Testing
 
@@ -114,6 +115,8 @@ Automated verification covers content integrity, semantic interaction states, re
 ## Deployment
 
 This repository is prepared for the bundled Sites runtime through `.openai/hosting.json` and vinext. Deployment is intentionally not performed without owner authorization.
+
+It also supports Vercel through `vercel.json`. Vercel must use the Next.js framework preset, `npm run build:vercel`, and its automatic Next.js output handling. Do not configure `dist` as Vercel's Output Directory because `dist` belongs to the separate Vinext build. If the Vercel dashboard has an Output Directory override, clear it before redeploying.
 
 Before deployment:
 

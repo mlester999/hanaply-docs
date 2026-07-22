@@ -2,11 +2,13 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CommandPalette } from "@/components/navigation/CommandPalette";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 
 const push = vi.fn();
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push }),
+  usePathname: () => "/",
 }));
 
 afterEach(() => {
@@ -32,5 +34,15 @@ describe("command palette keyboard and search flow", () => {
     render(<CommandPalette open onClose={onClose} />);
     fireEvent.keyDown(window, { key: "Escape" });
     expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it("marks only one home navigation item active and exposes the hamburger menu", async () => {
+    const user = userEvent.setup();
+    render(<SiteChrome><p>Vision content</p></SiteChrome>);
+    const primary = screen.getByRole("navigation", { name: "Primary navigation" });
+    expect(primary.querySelectorAll("a.active")).toHaveLength(1);
+    expect(screen.getByRole("link", { name: "Vision" })).toHaveClass("active");
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+    expect(screen.getByRole("navigation", { name: "Mobile navigation" })).toBeInTheDocument();
   });
 });

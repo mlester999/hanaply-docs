@@ -21,6 +21,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("vision");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -40,6 +41,19 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (pathname !== "/" || !("IntersectionObserver" in window)) return;
+    const sections = ["vision", "career-radar", "application-packs", "pricing"]
+      .map((id) => document.getElementById(id))
+      .filter((section): section is HTMLElement => Boolean(section));
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible) setActiveSection(visible.target.id);
+    }, { rootMargin: "-18% 0px -64%", threshold: [0, 0.1, 0.35] });
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [pathname]);
+
   return (
     <>
       <a className="skip-link" href="#main-content">Skip to content</a>
@@ -51,8 +65,9 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
           </Link>
           <nav className="desktop-nav" aria-label="Primary navigation">
             {nav.map(([label, href]) => {
-              const active = href.startsWith("/#") ? pathname === "/" : pathname.startsWith(href);
-              return <Link key={href} href={href} className={active ? "active" : ""}>{label}</Link>;
+              const section = href.startsWith("/#") ? href.slice(2) : "";
+              const active = section ? pathname === "/" && activeSection === section : pathname.startsWith(href);
+              return <Link key={href} href={href} className={active ? "active" : ""} onClick={() => section && setActiveSection(section)}>{label}</Link>;
             })}
           </nav>
           <div className="nav-actions">
@@ -67,7 +82,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
         </div>
         {menuOpen && (
           <nav id="mobile-menu" className="mobile-nav" aria-label="Mobile navigation">
-            {nav.map(([label, href]) => <Link key={href} href={href} onClick={() => setMenuOpen(false)}>{label}<span aria-hidden="true">↗</span></Link>)}
+            {nav.map(([label, href]) => <Link key={href} href={href} onClick={() => { setMenuOpen(false); if (href.startsWith("/#")) setActiveSection(href.slice(2)); }}>{label}<span aria-hidden="true">↗</span></Link>)}
             <Link href="/build-status" onClick={() => setMenuOpen(false)}>Build Status <span className="status-dot" /></Link>
           </nav>
         )}

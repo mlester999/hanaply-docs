@@ -32,9 +32,12 @@ describe("owner-editable content", () => {
   it("keeps responsive, focus, and reduced-motion safety rules in the shipped CSS", () => {
     const responsive = readFileSync(`${process.cwd()}/app/responsive.css`, "utf8");
     const global = readFileSync(`${process.cwd()}/app/globals.css`, "utf8");
-    for (const width of [1280, 1050, 800, 520]) expect(responsive).toContain(`max-width: ${width}px`);
+    for (const width of [1280, 1180, 1050, 800, 520]) expect(responsive).toContain(`max-width: ${width}px`);
     expect(responsive).toContain("prefers-reduced-motion: reduce");
     expect(global).toContain(":focus-visible");
     expect(global).toContain("overflow-x: clip");
+    expect(global).not.toContain(".desktop-nav a.active::after");
+    const pixelSizes = [...`${global}${responsive}`.matchAll(/font-size:\s*(\d+)px/g)].map((match) => Number(match[1]));
+    expect(Math.min(...pixelSizes)).toBeGreaterThanOrEqual(11);
   });
 });
