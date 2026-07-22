@@ -42,6 +42,18 @@ describe("product vision interactions", () => {
     expect(screen.getByText(/Do not apply under the current profile/i)).toBeInTheDocument();
   });
 
+  it("uses a compact custom career picker instead of a native mobile select", () => {
+    const { container } = render(<CareerRadarSimulator />);
+    const careerPicker = screen.getByRole("button", { name: "Main career" });
+
+    expect(container.querySelector("select")).not.toBeInTheDocument();
+    fireEvent.click(careerPicker);
+    fireEvent.click(screen.getByRole("option", { name: "Full Stack Developer" }));
+
+    expect(careerPicker).toHaveTextContent("Full Stack Developer");
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
   it("switches Application Pack content and keeps facts fixed", () => {
     render(<ApplicationPackDemo />);
     fireEvent.click(screen.getByRole("tab", { name: /tailored resume/i }));

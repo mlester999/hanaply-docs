@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, Ban, Check, ChevronDown, Radar, Sparkles } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 const careers = ["AI Automation Specialist", "Full Stack Developer", "Virtual Assistant", "Graphic Designer", "Customer Support Specialist"];
 const subCareers = ["Workflow Automation Engineer", "Backend Developer", "Solutions Engineer", "Operations Specialist", "Content Designer"];
@@ -17,7 +17,27 @@ const opportunities = [
 ];
 
 function SelectControl({ label, value, options, onChange }: { label: string; value: string; options: string[]; onChange: (value: string) => void }) {
-  return <label className="form-field"><span>{label}</span><span className="select-wrap"><select value={value} onChange={(event) => onChange(event.target.value)}>{options.map((option) => <option key={option}>{option}</option>)}</select><ChevronDown size={16} aria-hidden="true" /></span></label>;
+  const [open, setOpen] = useState(false);
+  const labelId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const closeOutside = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOutside);
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [open]);
+
+  return <div className="form-field" ref={rootRef}><span id={labelId}>{label}</span><div className="select-wrap"><button type="button" className="select-button" aria-labelledby={labelId} aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen((current) => !current)}><span>{value}</span><ChevronDown size={16} aria-hidden="true" /></button>{open && <div className="select-options" role="listbox" aria-labelledby={labelId}>{options.map((option) => <button type="button" role="option" aria-selected={option === value} key={option} onClick={() => { onChange(option); setOpen(false); }}><span>{option}</span>{option === value && <Check size={16} aria-hidden="true" />}</button>)}</div>}</div></div>;
 }
 
 function ChipPicker({ label, options, selected, onToggle }: { label: string; options: string[]; selected: string[]; onToggle: (value: string) => void }) {

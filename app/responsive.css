@@ -160,29 +160,47 @@
 
 @media (max-width: 520px) {
   .content-shell, .wide-shell, .roadmap-explorer, .architecture-explorer, .availability-warning, .status-groups, .status-lower, .build-source, .docs-index { width: calc(100% - 28px); }
-  .section-pad, .problem-section { padding: 76px 0; }
-  .site-header { height: 70px; }
-  .brand { font-size: 18px; }
-  .hero-section { padding: 112px 18px 62px; gap: 40px; }
-  .hero-copy h1 { margin-top: 22px; font-size: clamp(44px,13vw,60px); }
+  .section-pad, .problem-section { padding: 64px 0; }
+  .site-header, .site-header.is-scrolled { height: 64px; }
+  .brand { font-size: 17px; }
+  .menu-trigger { width:40px;height:40px }
+  .mobile-nav { top:calc(100% + 6px);right:10px;width:calc(100vw - 20px) }
+  .hero-section { padding: 98px 16px 58px; gap: 34px; }
+  .hero-copy h1 { margin-top: 20px; font-size: clamp(38px,11vw,48px);line-height:1.02 }
+  .hero-copy>p { font-size:15px;line-height:1.65 }
   .status-kicker small { display: none; }
   .hero-actions { display: grid; }
   .hero-actions a { width: 100%; }
   .hero-proof { display: grid; grid-template-columns: repeat(3,1fr); }
-  .hero-proof > div { gap: 6px; padding-right: 7px; }
-  .hero-proof strong { font-size:12px; }.hero-proof span { font-size:12px; }
-  .hero-visual { min-height: 490px; }
+  .hero-proof { margin-top:40px }
+  .hero-proof > div { gap:5px;padding:14px 5px 0 0 }
+  .hero-proof strong { font-size:11px; }.hero-proof span { font-size:11px;line-height:1.35 }
+  .hero-visual { height:450px;min-height:450px;max-height:450px }
   .hero-scene-head { height: 60px; padding: 0 14px; }
   .hero-scene-head button { font-size:12px; }
-  .scene-shell,.scene-loading { inset: 60px 0 100px; min-height: 300px; }
-  .signal-readout { left: 14px; right: 14px; bottom: 94px; }
-  .hero-job-card { padding: 12px 14px; }
-  .section-intro h2 { font-size: clamp(35px,10vw,47px); }
+  .scene-shell,.scene-loading { inset:60px 0 112px;min-height:0 }
+  .radar-fallback { gap:48px;padding:0 12% }
+  .signal-readout { left:14px;right:14px;bottom:98px }
+  .signal-readout small { display:none }
+  .readout-number { font-size:22px }
+  .signal-readout strong { font-size:12px }
+  .readout-state { padding:4px 6px;font-size:11px }
+  .hero-job-card { min-height:88px;grid-template-columns:minmax(0,1fr) auto;padding:11px 14px }
+  .company-glyph { display:none }
+  .hero-job-card small { font-size:11px;line-height:1.25 }
+  .hero-job-card strong { font-size:12px }
+  .section-intro { gap:14px;margin-bottom:40px }
+  .section-intro .eyebrow { margin-bottom:14px }
+  .section-intro h2 { font-size:clamp(30px,8.5vw,38px);line-height:1.08 }
+  .section-intro p { margin-top:18px;font-size:15px;line-height:1.65 }
   .job-noise-grid { grid-template-columns: 1fr; }
   .job-noise-grid article { min-height: 140px; }
   .noise-controls > div:last-child { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
   .sim-config { padding: 20px; }
+  .select-button { height:46px;font-size:14px }
+  .select-options { position:fixed;z-index:320;left:14px;right:14px;top:auto;bottom:14px;max-height:min(360px,70vh);padding:8px;border-radius:14px }
+  .select-options>button { min-height:48px;padding:10px 12px;font-size:14px }
   .sim-output { min-height: 680px; padding: 18px; }
   .results-header { align-items: flex-start; flex-direction: column; justify-content: center; gap: 7px; }
   .result-detail { padding: 18px; }

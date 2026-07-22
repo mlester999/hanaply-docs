@@ -78,7 +78,7 @@ export function CareerSignalScene() {
   const [webglUnavailable, setWebglUnavailable] = useState(false);
   return (
     <div ref={ref} className="scene-shell" aria-label="Career Radar filters weak signals and highlights worthwhile opportunities">
-      {!reduced && visible && !webglUnavailable ? (
+      {!reduced && !lowPower && visible && !webglUnavailable ? (
         <Canvas
           camera={{ position: [0, 0.4, 7], fov: 42 }}
           dpr={lowPower ? 1 : [1, 1.5]}
